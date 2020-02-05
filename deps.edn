@@ -1,0 +1,11 @@
+{:paths ["src"]
+ :deps {criterium {:mvn/version "0.4.5"}}
+ :aliases
+ {:jvm
+  {:jvm-opts [;; Disable function inlining, for toy examples this is
+              ;; maybe important (untested).
+              "-XX:MaxInlineSize=0"]}
+  :direct-linking
+  {:jvm-opts
+   [;; Enable direct linking, compare speed for that in production.
+    "-Dclojure.compiler.direct-linking=true"]}}}

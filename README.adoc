@@ -1,0 +1,53 @@
+= Direct call performance benchmark
+
+Benchmarking the overhead of calling a function directly `a` vs using a wrapping function like `#(a)`.
+In Clojure, you would do this in order to make the call more "REPL friendly", as in the latter case redefining a will change the behavior without requiring a restart.
+I've had several conversations about this where performance was raised as a concern, so I decided to measure the overhead.
+
+To me, the difference appears insignificant.
+
+[cols="h,m,m"]
+.Matrix of options used with inlining disabled
+|===
+| | No compiler options | Direct Linking
+
+| Indirect use `(def b #(a %))`
+|
+Evaluation count : 4845042720 in 60 samples of 80750712 calls.
+             Execution time mean : 9.534677 ns
+    Execution time std-deviation : 0.372420 ns
+   Execution time lower quantile : 9.066588 ns ( 2.5%)
+   Execution time upper quantile : 10.304019 ns (97.5%)
+                   Overhead used : 3.159809 ns
+|
+Evaluation count : 5206759680 in 60 samples of 86779328 calls.
+             Execution time mean : 4.784659 ns
+    Execution time std-deviation : 0.332266 ns
+   Execution time lower quantile : 4.282720 ns ( 2.5%)
+   Execution time upper quantile : 5.414823 ns (97.5%)
+                   Overhead used : 7.177589 ns
+| Direct use `(def c a)`
+|
+Evaluation count : 4421273100 in 60 samples of 73687885 calls.
+             Execution time mean : 10.696803 ns
+    Execution time std-deviation : 0.308295 ns
+   Execution time lower quantile : 10.324632 ns ( 2.5%)
+   Execution time upper quantile : 11.267389 ns (97.5%)
+                   Overhead used : 3.159809 ns
+|
+Evaluation count : 4568565000 in 60 samples of 76142750 calls.
+             Execution time mean : 6.339981 ns
+    Execution time std-deviation : 0.395668 ns
+   Execution time lower quantile : 5.724480 ns ( 2.5%)
+   Execution time upper quantile : 7.023956 ns (97.5%)
+                   Overhead used : 7.177589 ns
+|===
+
+== Running the tests
+
+You can run the tests yourself with `./run`.
+Some things to note:
+
+* You will need the Clojure CLI tools installed
+* I disable function inlining in the JVM options in an attempt to prevent certain optimizations happening because this is a toy example and I don't want the simpleness of the function to be ruined. `./run` does show output with both inlining disabled & enabled though.
+* It will run 2 JVMs, one after the other.

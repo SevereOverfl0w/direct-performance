@@ -1,0 +1,13 @@
+#!/bin/sh
+
+echo "== No compiler options"
+clojure -m direct-performance.core
+
+echo "== No compiler options inlining disabled"
+clojure -A:jvm -m direct-performance.core
+
+echo "== Direct linking"
+clojure -A:direct-linking -m direct-performance.core
+
+echo "== Direct linking inlining disabled"
+clojure -A:jvm:direct-linking -m direct-performance.core
